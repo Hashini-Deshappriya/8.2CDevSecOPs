@@ -1,0 +1,73 @@
+pipeline {
+    agent any
+
+    environment {
+        RECIPIENTS = 'gghashini@gmail.com'
+        LOG_DIR = 'logs'
+        TEST_LOG = "${LOG_DIR}/test.log"
+        AUDIT_LOG = "${LOG_DIR}/audit.log"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Hashini-Deshappriya/8.2CDevSecOps.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test || true' // Allows pipeline to continue despite test failures
+            }
+            post {
+                success {
+                    emailext to: 'gghashini@gmail.com',
+                             subject: "Run Tests Stage: SUCCESS",
+                             body: "The Run Tests stage completed successfully.",
+                             attachLog: true
+                }
+                failure {
+                    emailext to: 'gghashini@gmail.com',
+                             subject: "Run Tests Stage: FAILURE",
+                             body: "The Run Tests stage failed.",
+                             attachLog: true
+                }
+            }
+        }
+
+        stage('Generate Coverage Report') {
+            steps {
+                sh 'npm run coverage || true'
+            }
+        }
+
+        stage('NPM Audit (Security Scan)') {
+            steps {
+                sh 'npm audit || true' // This will show known CVEs in the output
+            }
+            post {
+                success {
+                    emailext to: 'gghashini@gmail.com',
+                             subject: "Security Scan: SUCCESS",
+                             body: "The security scan completed successfully.",
+                             attachLog: true
+                }
+                failure {
+                    emailext to: 'gghashini@gmail.com',
+                             subject: "Security Scan: FAILURE",
+                             body: "The security scan failed.",
+                             attachLog: true
+                }
+            }
+            
+        }
+        
+    }
+}
+
