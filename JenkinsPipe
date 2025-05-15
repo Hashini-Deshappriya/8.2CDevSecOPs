@@ -1,12 +1,7 @@
 pipeline {
     agent any
 
-    environment {
-        RECIPIENTS = 'gghashini@gmail.com'
-        LOG_DIR = 'logs'
-        TEST_LOG = "${LOG_DIR}/test.log"
-        AUDIT_LOG = "${LOG_DIR}/audit.log"
-    }
+    
 
     stages {
         stage('Checkout') {
