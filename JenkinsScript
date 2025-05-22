@@ -21,7 +21,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'npm test || true' // Allows pipeline to continue despite test failures
+                junit 'build/reports/**/*.xml' // Allows pipeline to continue despite test failures
             }
             post{
                 always{
