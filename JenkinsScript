@@ -23,6 +23,11 @@ pipeline {
             steps {
                 sh 'npm test || true' // Allows pipeline to continue despite test failures
             }
+            post{
+                always{
+                    junit junit 'test-reports/junit.xml'
+                }
+            }
             
         }
 
