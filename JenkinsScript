@@ -1,5 +1,7 @@
 pipeline {
     agent any
+    
+    
 
     stages {
         stage('Checkout') {
@@ -44,15 +46,27 @@ pipeline {
             }
         }
         stage('Run Code Quality Scan') {
+            environment{
+                scannerHome = tool 'Sonar'
+            }
             steps {
                 withSonarQubeEnv('Sonar'){
-                	sh 'sonar-scanner'
+                	sh '${scannerHome}/bin/sonar-scanner'
+                	//sh 'sonar-scanner'
                 }
             }
 	    }
         stage('NPM Audit (Security Scan)') {
             steps {
                 sh 'npm audit || true' // This will show known CVEs in the output
+            }
+
+            
+        }
+        stage('Deploy') {
+            steps {
+                sh 'docker-compose down || true' // This will show known CVEs in the output
+                sh 'docker-compose up'
             }
 
             
