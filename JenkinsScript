@@ -21,13 +21,20 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-               sh 'npm test|| true' // Allows pipeline to continue despite test failures
+                withEnv([
+                    'JEST_JUNIT_OUTPUT_DIR=test-results',
+                    'JEST_JUNIT_OUTPUT_NAME=results.xml'
+                    
+                ])
+                {
+                    sh 'mkdir -p test-results'
+                    sh 'npm test || true' // Allows pipeline to continue despite test failures
+                    sh 'ls -l test-results'
+                    junit 'test-results/results.xml'
+                }    
+               
             }
-            post{
-                always{
-                    junit '**/test-reports/*.xml'
-                }
-            }
+            
             
         }
 
@@ -36,7 +43,13 @@ pipeline {
                 sh 'npm run coverage || true'
             }
         }
-
+        stage('Run Code Quality Scan') {
+            steps {
+                withSonarQubeEnv('Sonar'){
+                	sh 'sonar-scanner'
+                }
+            }
+	    }
         stage('NPM Audit (Security Scan)') {
             steps {
                 sh 'npm audit || true' // This will show known CVEs in the output
