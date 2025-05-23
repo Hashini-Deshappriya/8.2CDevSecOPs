@@ -54,5 +54,17 @@
     "snyk": "^1.244.0",
     "jest-junit": "^16.0.0"
   },
+  "jest": {
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "test-results",
+          "outputName": "results.xml"
+        }
+      ]
+    ]
+  },
   "license": "Apache-2.0"
 }
