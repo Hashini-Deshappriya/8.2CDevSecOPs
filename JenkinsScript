@@ -57,11 +57,18 @@ pipeline {
 
             
         }
-        stage('Deploy') {
+        stage('Deploy Stage') {
             steps {
                 sh 'docker-compose down'
                 sh 'docker-compose up -d'
             }
+        }
+
+	stage('Release stage') {
+            echo "Tool : Octopus"
+        }
+	stage('Monitoring and Alerting') {
+            echo "Tool : Datadog"
         }
     }
 
