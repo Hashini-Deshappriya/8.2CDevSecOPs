@@ -65,10 +65,15 @@ pipeline {
         }
 
 	stage('Release stage') {
-            echo "Tool : Octopus"
+		steps {
+	            echo "Tool : Octopus"
+		}
         }
 	stage('Monitoring and Alerting') {
-            echo "Tool : Datadog"
+		steps{
+			 echo "Tool : Datadog"
+		}
+           
         }
     }
 
